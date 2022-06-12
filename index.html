@@ -19,23 +19,44 @@
             body {
                 text-align: center;
             }
+
+            input {
+                margin: 30px;
+            }
         </style>
     </head>
     <body>
-        <input type="file" accept="image/*" id="image-input" required />
+        <form id="main-form">
+            <label for="image-input">Image to watermark</label>
+            <input type="file" accept="image/*" id="image-input" required />
+
+            <br />
+
+            <label for="watermark-input">The watermark</label>
+            <input type="file" accept="image/*" id="watermark-input" required />
+
+            <br />
+
+            <input type="submit" />
+        </form>
 
         <div id="output"></div>
     </body>
-    <script>
+    <script type="module">
+        import "/watermark.min.js";
+
         const input = document.getElementById("image-input");
+        const watermark_image = document.getElementById("watermark-input");
         const output = document.getElementById("output");
 
-        input.addEventListener("change", (e) => {
+        document.getElementById("main-form").addEventListener("submit", (e) => {
             e.preventDefault();
 
-            let url = URL.createObjectURL(input.files[0]);
-
-            output.innerHTML = `<img src="${url}" />`;
+            watermark([input.files[0], watermark_image.files[0]])
+                .image(watermark.image.lowerRight(0.5))
+                .then((img) => {
+                    output.appendChild(img);
+                });
         });
     </script>
 </html>
